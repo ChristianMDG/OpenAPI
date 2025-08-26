@@ -1,0 +1,18 @@
+openapi: 3.0.0
+info:
+  title: Ping API
+  version: 1.0.0
+  description: API qui retourne un texte brut "pong"
+paths:
+  /ping:
+    get:
+      summary: Retourne pong
+      operationId: get_pong
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: pong
