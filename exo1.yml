@@ -3,6 +3,8 @@ info:
   title: Ping API
   version: 1.0.0
   description: API qui retourne un texte brut "pong"
+servers:
+  - url: http://localhost:8080/
 paths:
   /ping:
     get:
