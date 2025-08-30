@@ -1,0 +1,116 @@
+openapi: 3.0.0
+info:
+  title: API de gestion de tâches
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/
+paths:
+  /tasks:
+    get:
+      summary: Listes des taches
+      operationId: get_list_task
+      responses:
+        "200":
+          description: Listes des taches
+          content:
+            applicaton/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+    post:
+      summary: Crée une liste de nouvelles tâches
+      requestBody:
+        required: true
+        content:
+          applicaton/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Task"
+      responses:
+        "201":
+          description: Liste nouvelle créée
+          content:
+            applicaton/json:
+              schema:
+                type: array
+                items:
+                $ref: "#/components/schemas/Task"
+    delete:
+      summary: Supprime une liste de tâches
+      requestBody:
+       required: true
+       content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: integer
+              example: [1,2,3]
+      responses:
+        '200': 
+          description: Listes de taches Supprimée
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+
+
+  /tasks/{id}:
+    get:
+      summary: Retourne la tâche portant l’ID fourni
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Retourne la tâche portant l’ID fourni
+          content:
+            applicaton/json:
+              schema:
+                type: array
+                items:
+                $ref: "#/components/schemas/Task"
+        '400':
+          description: not found
+          content:
+            applicaton/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Task not found"
+    delete:
+      summary: Supprime une tâche portant l’ID fourni
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+              type: integer
+      responses:
+        "200": 
+          description: "tache Supprimé avec succes"
+
+components:
+  schemas:
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: "Faire les courses"
+        completed:
+          type: boolean
+          example: false
+  
