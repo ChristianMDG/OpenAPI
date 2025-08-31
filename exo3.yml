@@ -96,7 +96,7 @@ paths:
           schema:
               type: integer
       responses:
-        "201": 
+        "200": 
           description: "tache Supprimé avec succes"
 
 components:
