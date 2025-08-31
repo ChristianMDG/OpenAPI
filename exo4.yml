@@ -1,3 +1,68 @@
 openapi: 3.0.0
 info:
-  title: 
+  title: Recherche de produits
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/
+paths:
+  /products:
+    get:
+      summary: Retourner une liste de Product.​
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/q'
+      responses:
+        '200': 
+          description: Liste des produits
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+              examples:
+                multiple_product:
+                  value:
+                    - name: "Lait"
+                      expiration_datetime: "2024-12-31T23:59:14Z"
+                      price: 1500.0
+                    - name: "Oeuf"
+                      expiration_datetime: 0"2024-12-31T23:59:14Z" 
+                      price: 500.0
+                Liste_vide:
+                  value: []
+
+
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        name:
+          type: string
+        expiration_datetime:
+          type: string
+          format: date-time
+        price:
+          type: number
+          format: float
+          
+  parameters:
+    limit:
+      name: limit
+      in: query
+      description: nombre maximum d’éléments
+      required: false
+      schema:
+        type: integer
+    q:
+      name: q
+      in: query
+      description: terme de recherche.​
+      required: false
+      schema:
+        type: string
+
+
+
