@@ -1,0 +1,127 @@
+# exo5.yml
+openapi: 3.0.0
+info:
+  title: API avec Authentification
+  version: 1.0.0
+
+tags:
+  - name: Products
+  - name: Orders
+paths:
+  /products:
+    get:
+      tags: [Products]
+      summary: Liste des produits
+      responses:
+        '200':
+          description: Liste des produits
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+
+  /orders:
+    get:
+      tags: [Orders]
+      summary: Liste paginée des commandes
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/size'
+      responses:
+        '200':
+          description: Liste des commandes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+              example:
+                - identifier: 1001
+                  customer_name: "Christian Dior"
+                  creation_datetime: "2024-08-27T10:30:00Z"
+                  total_amount: 45.99
+                - identifier: 1002
+                  customer_name: "Rakoto Andria"
+                  creation_datetime: "2024-08-28T14:20:00Z"
+                  total_amount: 120.50
+
+    post:
+      tags: [Orders]
+      summary: Créer une commande
+      security:
+        - BasicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+            example:
+              customer_name: "Christian Dior"
+              total_amount: 45.99
+      responses:
+        '201':
+          description: Commande créée
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+              example:
+                identifier: 1001
+                customer_name: "Christian Dior"
+                creation_datetime: "2024-08-27T10:30:00Z"
+                total_amount: 45.99
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        name:
+          type: string
+        expiration_datetime:
+          type: string
+          format: date-time
+        price:
+          type: number
+          format: float
+
+    Order:
+      type: object
+      properties:
+        identifier:
+          type: integer
+        customer_name:
+          type: string
+        creation_datetime:
+          type: string
+          format: date-time
+        total_amount:
+          type: number
+          format: float
+
+  parameters:
+    page:
+      name: page
+      in: query
+      description: Numéro de page
+      required: false
+      schema:
+        type: integer
+        example: 1
+    size:
+      name: size
+      in: query
+      description: Taille de la page
+      required: false
+      schema:
+        type: integer
+        example: 20
+
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
