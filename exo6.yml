@@ -1,0 +1,213 @@
+# exo6.yml
+openapi: 3.0.0
+info:
+  title: API Gestion des Profils Utilisateurs
+  version: 1.0.0
+
+paths:
+  /users/{id}:
+    get:
+      summary: Retourne l'utilisateur avec toutes ses informations
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Utilisateur trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+              example:
+                identifier: "USER123"
+                first_name: "Alice"
+                last_name: "Martin"
+                birthdate: "1990-05-15"
+                email: "alice@email.com"
+                address_street: "123 Rue Principale"
+                address_city: "Paris"
+                address_country: "France"
+                address_postal_code: "75001"
+                needs_newsletter: true
+                language: "fr"
+
+  /users:
+    post:
+      summary: Crée une liste d'utilisateurs
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateUserProfile'
+            example:
+              - first_name: "Alice"
+                last_name: "Martin"
+                birthdate: "1990-05-15"
+                email: "alice@email.com"
+                address_street: "123 Rue Principale"
+                address_city: "Paris"
+                address_country: "France"
+                address_postal_code: "75001"
+                needs_newsletter: true
+                language: "fr"
+      responses:
+        '201':
+          description: Utilisateurs créés
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserProfile'
+              example:
+                - identifier: "USER123"
+                  first_name: "Alice"
+                  last_name: "Martin"
+                  birthdate: "1990-05-15"
+                  email: "alice@email.com"
+                  address_street: "123 Rue Principale"
+                  address_city: "Paris"
+                  address_country: "France"
+                  address_postal_code: "75001"
+                  needs_newsletter: true
+                  language: "fr"
+
+  /users/{id}/personalInfo:
+    put:
+      summary: Met à jour uniquement la partie informations personnelles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonalInfo'
+            example:
+              first_name: "Alice"
+              last_name: "Martin"
+              birthdate: "1990-05-15"
+              email: "alice@email.com"
+      responses:
+        '200':
+          description: Informations personnelles mises à jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+
+  /users/{id}/address:
+    put:
+      summary: Met à jour uniquement l'adresse
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Address'
+            example:
+              address_street: "123 Rue Principale"
+              address_city: "Paris"
+              address_country: "France"
+              address_postal_code: "75001"
+      responses:
+        '200':
+          description: Adresse mise à jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+
+  /users/{id}/preferences:
+    put:
+      summary: Met à jour uniquement les préférences
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Preferences'
+            example:
+              needs_newsletter: true
+              language: "fr"
+      responses:
+        '200':
+          description: Préférences mises à jour
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+
+components:
+  schemas:
+    UserProfile:
+      allOf:
+        - $ref: '#/components/schemas/PersonalInfo'
+        - $ref: '#/components/schemas/Address'
+        - $ref: '#/components/schemas/Preferences'
+      properties:
+        identifier:
+          type: string
+
+    CreateUserProfile:
+      allOf:
+        - $ref: '#/components/schemas/PersonalInfo'
+        - $ref: '#/components/schemas/Address'
+        - $ref: '#/components/schemas/Preferences'
+
+    PersonalInfo:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        birthdate:
+          type: string
+          format: date
+        email:
+          type: string
+          format: email
+
+    Address:
+      type: object
+      properties:
+        address_street:
+          type: string
+        address_city:
+          type: string
+        address_country:
+          type: string
+        address_postal_code:
+          type: string
+
+    Preferences:
+      type: object
+      properties:
+        needs_newsletter:
+          type: boolean
+        language:
+          type: string
+          enum: [mg, fr, eng]
